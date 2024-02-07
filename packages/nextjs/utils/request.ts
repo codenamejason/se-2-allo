@@ -1,4 +1,4 @@
-"use server";
+"use client";
 
 import { getIPFSClient } from "../services/ipfs";
 import { TApplicationData, TApplicationMetadata, TProfileResponse, TProfilesByOwnerResponse } from "../types/types";

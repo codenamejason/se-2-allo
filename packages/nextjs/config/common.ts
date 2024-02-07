@@ -1,5 +1,5 @@
-import dotenv from "dotenv";
 import { TNewApplication, TPoolMetadata } from "../types/types";
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -31,8 +31,7 @@ export const commonConfig: CommonConfig = {
   poolId: 216,
   nonce: Math.floor(Math.random() * 10000),
   rpc: process.env.NEXT_PUBLIC_RPC_URL as string, // arbitrum-sepolia
-  ownerProfileId:
-    "0x9abfca304ae55abc43a50e846e80fbe0bc01ee6abdb6cf5c218f6ade517590c0",
+  ownerProfileId: "0x9abfca304ae55abc43a50e846e80fbe0bc01ee6abdb6cf5c218f6ade517590c0",
   ownerAddress: "0x8C180840fcBb90CE8464B4eCd12ab0f840c6647C",
   anchorAddress: "0xbd35e5f5ec336eef6946314e668ed95aed4552ac",
   profileName: "Allo Workshop",
@@ -40,8 +39,7 @@ export const commonConfig: CommonConfig = {
   application: {
     requestedAmount: BigInt(1e13),
     recipientAddress: "0x8C180840fcBb90CE8464B4eCd12ab0f840c6647C",
-    profileId:
-      "0x13ffe09671f07a4eb6bfcf96fa58d93bedabf721d26d0cc162f267504816f3db",
+    profileId: "0x13ffe09671f07a4eb6bfcf96fa58d93bedabf721d26d0cc162f267504816f3db",
     name: "Test Application",
     website: "https://docs.allo.gitcoin.co",
     profileName: "Jax Test",
@@ -56,8 +54,7 @@ export const commonConfig: CommonConfig = {
   recipientId: "0xbd35e5f5ec336eef6946314e668ed95aed4552ac",
   members: [],
   pool: {
-    profileId:
-      "0x9abfca304ae55abc43a50e846e80fbe0bc01ee6abdb6cf5c218f6ade517590c0",
+    profileId: "0x9abfca304ae55abc43a50e846e80fbe0bc01ee6abdb6cf5c218f6ade517590c0",
     name: "Allo Starter Kit Pool",
     description: "A pool for developers to test the Allo SDK",
     website: "https://allo.gitcoin.co",

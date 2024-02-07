@@ -1,3 +1,13 @@
+import { MicroGrantsStrategy } from "@allo-team/allo-v2-sdk";
+import { CreatePoolArgs } from "@allo-team/allo-v2-sdk/dist/Allo/types";
+import { TransactionData, ZERO_ADDRESS } from "@allo-team/allo-v2-sdk/dist/Common/types";
+import {
+  Allocation,
+  InitializeParams,
+  SetAllocatorData,
+} from "@allo-team/allo-v2-sdk/dist/strategies/MicroGrantsStrategy/types";
+import { getWalletClient, sendTransaction, waitForTransaction } from "@wagmi/core";
+import { decodeEventLog } from "viem";
 import { MicroGrantsABI } from "../abis/Microgrants";
 import { commonConfig } from "../config/common";
 import { getIPFSClient } from "../services/ipfs";
@@ -14,30 +24,19 @@ import {
 import { checkIfRecipientIsIndexedQuery } from "../utils/query";
 import { getProfileById } from "../utils/request";
 import { allo } from "./allo";
-import { MicroGrantsStrategy } from "@allo-team/allo-v2-sdk";
-import { CreatePoolArgs } from "@allo-team/allo-v2-sdk/dist/Allo/types";
-import { TransactionData, ZERO_ADDRESS } from "@allo-team/allo-v2-sdk/dist/Common/types";
-import {
-  Allocation,
-  InitializeParams,
-  SetAllocatorData,
-} from "@allo-team/allo-v2-sdk/dist/strategies/MicroGrantsStrategy/types";
-import { getWalletClient, sendTransaction, waitForTransaction } from "@wagmi/core";
-import { decodeEventLog } from "viem";
 
 // create a strategy instance
-// ? snippet => createStrategyInstance
 export const strategy = new MicroGrantsStrategy({
   chain: commonConfig.chainId,
   rpc: commonConfig.rpc,
 });
 
 // NOTE: This is the deploy params for the MicroGrantsv1 contract
-// 🚨 Please make sure your strategy type is correct or Spec will not index it.
+// 🚨 Please make sure the strategy type is correct or Spec will not index it.
 // MicroGrants: StrategyType.MicroGrants
 // Hats: StrategyType.Hats
 // Gov: StrategyType.Gov
-// ? snippet => deployParams
+// SQFSuperFluid: StrategyType.SuperFluid -> StrategyType.SQFSuperFluid.toString()
 export const deployParams = strategy.getDeployParams("MicroGrantsv1");
 
 // console.log("deployParams", deployParams);
@@ -62,6 +61,7 @@ export const deployMicrograntsStrategy = async (pointer: any, profileId: string)
       hash: hash as `0x${string}`,
       chainId: commonConfig.chainId,
     });
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     strategyAddress = result.contractAddress!;
   } catch (e) {
     console.error("Deploying Strategy", e);
@@ -80,7 +80,6 @@ export const deployMicrograntsStrategy = async (pointer: any, profileId: string)
   };
 
   // get the init data
-  // ? snippet => getInitializeData
   const initStrategyData = await strategy.getInitializeData(initParams);
 
   const poolCreationData: CreatePoolArgs = {
@@ -97,7 +96,6 @@ export const deployMicrograntsStrategy = async (pointer: any, profileId: string)
   };
 
   // Prepare the transaction data
-  // ? snippet => createPoolWithCustomStrategy
   const createPoolData = await allo.createPoolWithCustomStrategy(poolCreationData);
 
   try {
@@ -222,14 +220,14 @@ export const createApplication = async (data: TNewApplication, chain: number, po
     anchorAddress = (
       await getProfileById({
         chainId: chain.toString(),
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         profileId: profileId!.toLowerCase(),
       })
     ).anchor;
   }
 
-  console.log("anchorAddress", anchorAddress);
+  console.log("Anchor Address ==>", anchorAddress);
 
-  // todo: snippet => getRegisterRecipientData
   const registerRecipientData = strategy.getRegisterRecipientData({
     registryAnchor: anchorAddress as `0x${string}`,
     recipientAddress: commonConfig.recipientId,
@@ -240,7 +238,7 @@ export const createApplication = async (data: TNewApplication, chain: number, po
     },
   });
 
-  console.log("registerRecipientData", registerRecipientData);
+  console.log("Register Recipient Data ==>", registerRecipientData);
 
   try {
     const tx = await sendTransaction({
